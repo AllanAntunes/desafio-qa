@@ -1,0 +1,178 @@
+{
+	"info": {
+		"_postman_id": "3657a0dd-af87-4e61-bc49-6e4644653ad8",
+		"name": "ViaCEP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17446308"
+	},
+	"item": [
+		{
+			"name": "Get address from CEP",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.test('Specific: CEP should be 8 digits long and contain only numbers', () => {\r",
+							"    let cep = pm.variables.get('cep')\r",
+							"    pm.expect(cep, 'Variable \"cep\" should be defined').to.not.be.undefined\r",
+							"    pm.expect(cep).to.match(/^\\d{8}$/)\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://viacep.com.br/ws/{{cep}}/{{format}}/?callback={{callback_name}}",
+					"protocol": "https",
+					"host": [
+						"viacep",
+						"com",
+						"br"
+					],
+					"path": [
+						"ws",
+						"{{cep}}",
+						"{{format}}",
+						""
+					],
+					"query": [
+						{
+							"key": "callback",
+							"value": "{{callback_name}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get CEP from address",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.test('Specific: State should be exactly 2 uppercase letters', () => {\r",
+							"    let state = pm.variables.get('state')\r",
+							"    pm.expect(state, 'Variable \"state\" should be defined').to.not.be.undefined\r",
+							"    pm.expect(state).to.match(/^[A-Z]{2}$/)\r",
+							"})\r",
+							"\r",
+							"pm.test('Specific: City should have at least 3 characters', () => {\r",
+							"    let city = pm.variables.get('city')\r",
+							"    pm.expect(city, 'Variable \"city\" should be defined').to.not.be.undefined\r",
+							"    pm.expect(city.length).to.be.at.least(3)\r",
+							"})\r",
+							"\r",
+							"pm.test('Specific: Street should have at least 3 characters', () => {\r",
+							"    let city = pm.variables.get('street')\r",
+							"    pm.expect(city, 'Variable \"street\" should be defined').to.not.be.undefined\r",
+							"    pm.expect(city.length).to.be.at.least(3)\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://viacep.com.br/ws/{{state}}/{{city}}/{{street}}/{{format}}/",
+					"protocol": "https",
+					"host": [
+						"viacep",
+						"com",
+						"br"
+					],
+					"path": [
+						"ws",
+						"{{state}}",
+						"{{city}}",
+						"{{street}}",
+						"{{format}}",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.test('Collection: Format is JSON or XML', () => {\r",
+					"    let format = pm.variables.get('format')\r",
+					"    pm.expect(format, 'Variable \"format\" should be defined').to.not.be.undefined\r",
+					"    pm.expect(['json', 'xml']).to.include(format)\r",
+					"})"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.test('Collection: Status code is 200', () => {\r",
+					"    pm.response.to.have.status(200)\r",
+					"})"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "cep",
+			"value": "13054709",
+			"type": "string"
+		},
+		{
+			"key": "state",
+			"value": "SP",
+			"type": "string"
+		},
+		{
+			"key": "city",
+			"value": "Hortolândia",
+			"type": "string"
+		},
+		{
+			"key": "street",
+			"value": "Avenida Olívio Franceschini",
+			"type": "string"
+		},
+		{
+			"key": "format",
+			"value": "json",
+			"type": "string"
+		},
+		{
+			"key": "callback_name",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
